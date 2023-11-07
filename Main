@@ -1,0 +1,1604 @@
+	#include <iostream>
+	#include <fstream>
+	#include <iomanip>
+	#include <locale>
+	#include <math.h>
+	using namespace std;
+	int size()
+	{
+		setlocale(LC_ALL, "Russian");
+		fstream f;
+		f.open("in.txt", ios::in);
+		char s;
+		int size;
+		int c = 0;
+		int k = 0;
+		if (!f.is_open())
+		{
+			cout << "ошибка файла";
+		}
+		else
+		{
+			f >> size;
+			f << resetiosflags(ios::skipws);
+			while (!f.eof())
+			{
+				f >> s;
+				if (s != '\n')
+				{
+					k++;
+				}
+				if (s == '\n' || f.eof())
+				{
+					if (k > 0)
+					{
+						c++;
+					}
+					k = 0;
+				}
+			}
+			if (size < c)
+			{
+				c = size;
+			}
+		}
+		f.close();
+		return c;
+	}
+	float** arr(int* N1)
+	{
+		int N = *N1;
+		int q = 0;
+		float j1,j4;
+		char j3;
+		float** A = new float* [N];
+		for (int i = 0; i < N; i++)
+			A[i] = new float[2];
+		fstream f,f3,f4;
+		f.open("in.txt", ios::in);
+		f3.open("in.txt", ios::in);
+		f4.open("in.txt", ios::in);
+		ofstream f2("protocol.txt");
+		f >> j1;
+		f3 >> j3;
+		f4 >> j4;
+		f3 >> j3;
+		for (int i = 0; i < N; i++)
+		{
+			char j2 = '1';
+			f << setiosflags(ios::skipws);
+			f3 << resetiosflags(ios::skipws);
+			float p = f.tellg();
+			f4.seekg(p, ios::beg);
+			f4 >> j4;
+			p = f4.tellg();
+			f3.seekg(p, ios::beg);
+			f3 >> j3;
+			for (int j = 0; j < 2; j++)
+			{
+				if (j == 0 && (j3 == '\n' || f3.eof()))
+				{
+					f2 << j4 << " " << "Вылетает" << "\n";
+					N--;
+					i--;
+					break;
+				}
+				else
+				{
+					f >> j1;
+					A[i][j] = j1;
+				}
+			}
+			f << resetiosflags(ios::skipws);
+			int tmp = 0;
+			while (j2 != '\n' && q==0)
+			{
+				q = f.eof();
+				f >> j2;
+				if (j2 != ' ' && j2 != '\n' && j2!='1')
+				{
+				f2 << j2;
+				tmp = 1;
+				}
+			}
+			if (tmp == 1)
+			{
+			f2<< " " << "Вылетает" << "\n";
+			}
+		}
+		////cout << "\n" << "A1" << "\n";
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				////cout << A[i][j] << " ";
+			}
+			////cout << "\n";
+		}
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				if ((A[i][0] == A[j][0]) && (A[i][1] == A[j][1]) && (i != j))
+				{
+					for (int g = j;g < (N - 1);g++)
+					{
+						A[g][0] = A[g + 1][0];
+						A[g][1] = A[g + 1][1];
+					}
+					j--;
+					N--;
+				}
+			}
+		}
+		f2 << N << "\n";
+		for (int i = 0; i < N; i++)
+		{
+			f2 << i + 1 << ". " <<"(";
+			for (int j = 0; j < 2; j++)
+			{
+				if (j == 0)
+				{
+					f2 << A[i][j] << "; ";
+				}
+				else
+				{
+					f2 << A[i][j];
+				}
+			}
+			f2 <<")"<< "\n";
+		}
+		*N1 = N;
+		f.close();
+		f2.close();
+		return A;
+	}
+	float*** vozmojnietreyg(float** A, int N, int* c1)
+	{
+		int c = *c1;
+		////cout << "\n" << "A2" << "\n";
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				////cout << A[i][j] << " ";
+			}
+			////cout << "\n";
+		}
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				if (j == i)
+				{
+					break;
+				}
+
+				for (int g = 0; g < N; g++)
+				{
+					if (g == j)
+					{
+						break;
+					}
+					c++;
+					////cout <<"\n"<< i << j << g <<"точки";
+				}
+			}
+		}
+		////cout <<"\n"<< c << "всего";
+		float*** B = new float** [c];
+		for (int i = 0; i < c; i++)
+		{
+			B[i] = new float* [3];
+			for (int j = 0; j < 3; j++)
+			{
+				B[i][j] = new float[2];
+			}
+		}
+		int q = 0;
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				if (j == i)
+				{
+					break;
+				}
+				for (int g = 0; g < N; g++)
+				{
+					if (g == j)
+					{
+						break;
+					}
+					for (int w = 0; w < 3; w++)
+					{
+						for (int e = 0; e < 2; e++)
+						{
+							if (w == 0)
+							{
+								B[q][w][e] = A[i][e];
+							}
+							else if (w == 1)
+							{
+								B[q][w][e] = A[j][e];
+							}
+							else
+							{
+								B[q][w][e] = A[g][e];
+							}
+						}
+					}
+					q++;
+				}
+			}
+		}
+		////cout << "\n"<<"B1"<<"\n";
+		for (int i = 0; i < c; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				for (int g = 0; g < 2; g++)
+				{
+					////cout << B[i][j][g];
+				}
+				////cout << " ";
+			}
+			////cout << "\n";
+		}
+		*c1 = c;
+		return B;
+	}
+	void Tsort(float*** B, int* c1)
+	{
+		int c = *c1;
+		float*** C = new float** [c];
+		for (int i = 0; i < c; i++)
+		{
+			C[i] = new float* [3];
+			for (int j = 0; j < 3; j++)
+			{
+				C[i][j] = new float[2];
+			}
+		}
+		for (int i = 0;i < c;i++)
+		{
+			double ymin = 10e10, ymin2 = 10e10, ymax = -10e10, ymax2 = -10e10, xmin = 10e10, xmin2 = 10e10, xmax = -10e10, xmax2 = -10e10;
+			float sredlX, sredlX1, sredlX2;
+			sredlX1 = (B[i][0][0] + B[i][1][0]) / 2.0;
+			sredlX2 = (B[i][0][0] + B[i][2][0]) / 2.0;
+			sredlX = (sredlX1 + sredlX2) / 2.0;
+
+			for (int j = 0;j < 3;j++)
+			{
+				if ((B[i][j][0] <= sredlX) && (B[i][j][1] > ymax2))
+				{
+					ymax2 = B[i][j][1];
+				}
+				if ((B[i][j][0] <= sredlX) && (B[i][j][1] < ymin2))
+				{
+					ymin2 = B[i][j][1];
+				}
+				if ((B[i][j][0] > sredlX) && (B[i][j][1] < ymin))
+				{
+					ymin = B[i][j][1];
+				}
+				if ((B[i][j][0] > sredlX) && (B[i][j][1] > ymax))
+				{
+					ymax = B[i][j][1];
+				}
+				if ((B[i][j][0] <= sredlX) && (B[i][j][0] < xmin2))
+				{
+					xmin2 = B[i][j][0];
+				}
+				if ((B[i][j][0] <= sredlX) && (B[i][j][0] > xmax2))
+				{
+					xmax2 = B[i][j][0];
+				}
+				if ((B[i][j][0] > sredlX) && (B[i][j][0] < xmin))
+				{
+					xmin = B[i][j][0];
+				}
+				if ((B[i][j][0] > sredlX) && (B[i][j][0] > xmax))
+				{
+					xmax = B[i][j][0];
+				}
+			}
+			////cout<< " " << sredlX<<" "<<ymin << " " << ymin2 << " " << ymax << " " << ymax2 << " " << xmin << " " << xmin2 << " " << xmax << " " << xmax2;
+			bool x = true;
+			bool y = true;
+			for (int j = 0;j < 3;j++)
+			{
+				//////cout << j << "pi ";
+				if (ymin2 == ymax2 && xmin2 == xmax2)
+				{
+					if (B[i][j][0] <= sredlX)
+					{
+						C[i][0][0] = B[i][j][0];
+						C[i][0][1] = B[i][j][1];
+					}
+					else
+					{
+						if (ymax == ymin)
+						{
+							if (B[i][j][1] == ymin && B[i][j][0] == xmin)
+							{
+								C[i][1][0] = B[i][j][0];
+								C[i][1][1] = B[i][j][1];
+								//////cout << "bilo";
+							}
+							else
+							{
+								C[i][2][0] = B[i][j][0];
+								C[i][2][1] = B[i][j][1];
+							}
+						}
+						else
+						{
+							if (B[i][j][1] == ymin)
+							{
+								C[i][1][0] = B[i][j][0];
+								C[i][1][1] = B[i][j][1];
+								//////cout << "bilo";
+							}
+							else
+							{
+								C[i][2][0] = B[i][j][0];
+								C[i][2][1] = B[i][j][1];
+							}
+						}
+					}
+				}
+				else
+				{
+					if (B[i][j][0] > sredlX)
+					{
+						C[i][2][0] = B[i][j][0];
+						C[i][2][1] = B[i][j][1];
+					}
+					else
+					{
+						if (ymax2 == ymin2)
+						{
+							if (B[i][j][1] == ymax2 && B[i][j][0] == xmin2)
+							{
+								C[i][0][0] = B[i][j][0];
+								C[i][0][1] = B[i][j][1];
+							}
+							else
+							{
+								C[i][1][0] = B[i][j][0];
+								C[i][1][1] = B[i][j][1];
+								////cout << "bilo";
+							}
+						}
+						else
+						{
+							if (B[i][j][1] == ymax2)
+							{
+								C[i][0][0] = B[i][j][0];
+								C[i][0][1] = B[i][j][1];
+							}
+							else
+							{
+								C[i][1][0] = B[i][j][0];
+								C[i][1][1] = B[i][j][1];
+								////cout << "bilo";
+							}
+						}
+					}
+				}
+			}
+			int pipi=10;
+			for (int ii = 0;ii < 3;ii++)
+			{
+				int tmp = 0;
+				for (int jj = 0;jj < 3;jj++)
+				{
+					if (C[i][ii][0] == B[i][jj][0] && C[i][ii][1] == B[i][jj][1])
+					{
+						tmp++;
+					}
+				}
+				if (tmp == 0)
+				{
+					pipi = ii;
+					break;
+				}
+			}
+			int pipa = 10;
+			for (int ii = 0;ii < 3;ii++)
+			{
+				int tmp = 0;
+				for (int jj = 0;jj < 3;jj++)
+				{
+					if (B[i][ii][0] == C[i][jj][0] && B[i][ii][1] == C[i][jj][1])
+					{	
+						tmp++;
+					}
+				}
+				if (tmp == 0)
+				{
+					pipa = ii;
+					break;
+				}
+			}
+			if (pipi != 10 && pipa != 10)
+			{
+				C[i][pipi][0] = B[i][pipa][0];
+				C[i][pipi][1] = B[i][pipa][1];
+			}
+		}
+		ofstream f;
+		f.open("protocol.txt", ios::app);
+		f << "Треугольники, точки отсортированы против часовой стрелки:" << "\n";
+		////cout << "\n" << "C" << "\n";
+		for (int i = 0; i < c; i++)
+		{
+			f << i+1 << "." << " ";
+			for (int j = 0; j < 3; j++)
+			{
+				f << "(";
+				for (int g = 0; g < 2; g++)
+				{
+					////cout << C[i][j][g];
+					f << C[i][j][g] << " ";
+				}
+				f << ")";
+				////cout << " ";
+				f << " ";
+			}
+			////cout << "\n";
+			f << "\n";
+		}
+		for (int i = 0; i < c; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				for (int g = 0; g < 2; g++)
+				{
+					B[i][j][g] = C[i][j][g];
+				}
+			}
+		}
+		delete[]C;
+	}
+	int proverka(float** B)
+	{
+		float k1, k2, b1, b2;
+		k1 = (B[0][1] - B[1][1]) / (B[0][0] - B[1][0]);
+		k2 = (B[0][1] - B[2][1]) / (B[0][0] - B[2][0]);
+		b1 = (B[0][0] * B[1][1] - B[1][0] * B[0][1]) / (B[0][0] - B[1][0]);
+		b2 = (B[0][0] * B[2][1] - B[2][0] * B[0][1]) / (B[0][0] - B[2][0]);
+		if ((k1==k2) && (b1==b2))
+		{
+			return 0;
+		}
+		return 1;
+	}
+	void treyg(float*** B,int* c1)
+	{
+		int c = *c1;
+		////cout << "\n" << "B2" << "\n";
+		for (int i = 0; i < c; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				for (int g = 0; g < 2; g++)
+				{
+					////cout << B[i][j][g];
+				}
+				////cout << " ";
+			}
+			////cout << "\n";
+		}
+		ofstream f;
+		f.open("protocol.txt", ios::app);
+		for (int i = 0;i < c;i++)
+		{
+			if (proverka(B[i]) == 0)
+			{
+				f << "\n" << "Точки" << " ";
+				for (int j = 0;j < 3;j++)
+				{
+					f << "(" << B[i][j][0] << ";" << B[i][j][1] << ")"<<" ";
+				}
+				f << "следует исключить т.к точки лежат на одной прямой";
+				for (int j = i;j < c - 1;j++)
+				{
+					B[j] = B[j + 1];
+				}
+				c--;
+				i--;
+			}
+		}
+		*c1 = c;
+		f << "\n" << "Треугольники:" << "\n";
+		for (int i = 0; i < c; i++)
+		{
+			f << i + 1 << "." << " ";
+			for (int j = 0; j < 3; j++)
+			{
+				f << "(";
+				for (int g = 0; g < 2; g++)
+				{
+					f << B[i][j][g]<<" ";
+				}
+				f << ")";
+				f << " ";
+			}
+			f << "\n";
+		}
+	}
+	int proverka2(float** B,float** A)
+	{
+		int c = 0;
+		float k11, k12,k13,k21,k22,k23;
+		float* X = new float[3];
+		float* Y = new float[3];
+		k11 = (B[0][1] - B[1][1]) / (B[0][0] - B[1][0]);
+		X[0] = k11;
+		k12 = (B[0][1] - B[2][1]) / (B[0][0] - B[2][0]);
+		X[1] = k12;
+		k13 = (B[2][1] - B[1][1]) / (B[2][0] - B[1][0]);
+		X[2] = k13;
+		k21 = (A[0][1] - A[1][1]) / (A[0][0] - A[1][0]);
+		Y[0] = k21;
+		k22 = (A[0][1] - A[2][1]) / (A[0][0] - A[2][0]);
+		Y[1] = k22;
+		k23 = (A[2][1] - A[1][1]) / (A[2][0] - A[1][0]);
+		Y[2] = k23;
+		/*
+		for (int i = 0;i < 3;i++)
+		{
+			for (int j = 0;j < 3;j++)
+			{
+				if ((B[i][0] == A[j][0]) && (B[i][1] == A[j][1]))
+				{
+					return 3;
+				}
+			}
+		}
+		*/
+		if ((k11) == (k21) && (k12) == (k22) && (k13) == (k23))
+		{
+			return 1;
+		}
+		for (int i = 0;i < 3;i++)
+		{
+			for (int j = 0; j < 3;j++)
+			{
+				if (i != j)
+				{
+					if (X[i] == Y[j])
+					{
+						c++;
+						break;
+					}
+				}
+			}
+		}
+		if (c == 3)
+		{
+			return 2;
+		}
+		return 3;
+	}
+	bool proverka3(float** Q1, int tmp, float x3, float y3)
+	{
+		for (int i = 0;i < tmp;i++)
+		{
+			if (Q1[i][0] == x3 && Q1[i][1] == y3)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	void maxploshad(float*** B, int* c1)
+	{
+		bool chikchirik = false;
+		int w = 0;
+		int chik = 0;
+		float Max = 0;
+		float S=0;
+		int c = *c1;
+		int e = c;
+		ofstream f1;
+		f1.open("protocol.txt", ios::app);
+		if (c == 1 || c == 0)
+		{
+			f1 << "Нет треугольников :(";
+		}
+		else
+		{
+			f1 << "\n" << "Рассматриваются треугольники: " << "\n";
+			float A, bb, cc;
+			////cout << c << "\n";
+			float* Q = new float[3];
+			float* L = new float[3];
+			float* L2 = new float[3];
+			float** Q1 = new float* [6];
+			for (int i = 0;i < 6;i++)
+				Q1[i] = new float(2);
+			for (int i = 0;i < c;i++)
+			{
+				for (int j = i;j < c;j++)
+				{
+					chikchirik = false;
+					chik = 0;
+					if (i != j)
+					{
+						S = 0;
+						//////cout << Max<<"\n";
+						f1 << "\n";
+						for (int g = 0;g < 3;g++)
+						{
+							f1 << " " << "(" << B[i][g][0] << " " << B[i][g][1] << ")";
+						}
+						f1 << " " << "и";
+						for (int g = 0;g < 3;g++)
+						{
+							f1 << " " << "(" << B[j][g][0] << " " << B[j][g][1] << ")";
+						}
+						//f1 << "\n";
+						int p = proverka2(B[i], B[j]);
+						if (p == 3)
+						{
+							chikchirik = true;
+							f1 << " -Стороны данных треугольников не паралельны";
+						}
+						else if (p == 1)
+						{
+							f1 << " -Стороны данных треугольников паралельны";
+							for (int g = 0;g < 3;g++)
+							{
+								Q[g] = 0;
+							}
+							for (int g = 0;g < 3;g++)
+							{
+								L[g] = 0;
+							}
+							for (int g = 0;g < 3;g++)
+							{
+								L2[g] = 0;
+							}
+							bool x = false, y = false;
+							for (int g = 0;g < 3;g++)
+							{
+								float x1, x2, x3, y1, y2, y3, x0, y0;
+								x1 = B[i][0][0];
+								x2 = B[i][1][0];
+								x3 = B[i][2][0];
+								y1 = B[i][0][1];
+								y2 = B[i][1][1];
+								y3 = B[i][2][1];
+								x0 = B[j][g][0];
+								y0 = B[j][g][1];
+								A = ((x1 - x0) * (y2 - y1) - (x2 - x1) * (y1 - y0));
+								bb = ((x2 - x0) * (y3 - y2) - (x3 - x2) * (y2 - y0));
+								cc = ((x3 - x0) * (y1 - y3) - (x1 - x3) * (y3 - y0));
+								if ((A > 0 && bb > 0 && cc > 0) || ((A < 0 && bb < 0 && cc < 0)))
+								{
+									Q[g] = 1;
+									x = true;
+								}
+								else if (A == 0 || bb == 0 || cc == 0)
+								{
+									y = true;
+									if (A == 0 && ((x1 <= x0 && x0 <= x2) || (x2 <= x0 && x0 <= x1)) && ((y1 <= y0 && y0 <= y2) || (y2 <= y0 && y0 <= y1)))
+									{
+										L2[0] = 1;
+										L[g] = 1;
+										//////cout << "1";
+									}
+									else if (bb == 0 && ((x2 <= x0 && x0 <= x3) || (x3 <= x0 && x0 <= x2)) && ((y2 <= y0 && y0 <= y3) || (y3 <= y0 && y0 <= y2)))
+									{
+										L2[1] = 1;
+										L[g] = 1;
+										//////cout << "2";
+									}
+									else if (cc == 0 && ((x3 <= x0 && x0 <= x1) || (x1 <= x0 && x0 <= x3)) && ((y3 <= y0 && y0 <= y1) || (y1 <= y0 && y0 <= y3)))
+									{
+										L2[2] = 1;
+										L[g] = 1;
+										//////cout << "3";
+									}
+								}
+								//f1 <<"_"<< a << " " << b << " " << c;
+								//////cout << a << " " << b << " " << c << " " << "\n";
+							}
+							for (int g = 0;g < 3;g++)
+							{
+								////cout << L2[g]; 
+							}
+							////cout << "\n";
+							for (int g = 0;g < 3;g++)
+							{
+								////cout << L[g];
+							}
+							////cout << "\n";
+							float q, l;
+							float x1, x2, x3, x4, y1, y2, y3, y4;
+							if (x == true)
+							{
+								float k1, b1, k2, b2, b, k;
+								for (int g = 0;g < 3;g++)
+								{
+									if (Q[g] == 1)
+									{
+										if (g == 0)
+										{
+											b1 = (B[j][g][0] * B[j][1][1] - B[j][1][0] * B[j][g][1]) / (B[j][g][0] - B[j][1][0]);
+											k1 = (B[j][g][1] - B[j][1][1]) / (B[j][g][0] - B[j][1][0]);
+											b2 = (B[j][g][0] * B[j][2][1] - B[j][2][0] * B[j][g][1]) / (B[j][g][0] - B[j][2][0]);
+											k2 = (B[j][g][1] - B[j][2][1]) / (B[j][g][0] - B[j][2][0]);
+											b = (B[i][2][0] * B[i][1][1] - B[i][1][0] * B[i][2][1]) / (B[i][2][0] - B[i][1][0]);
+											k = (B[i][2][1] - B[i][1][1]) / (B[i][2][0] - B[i][1][0]);
+										}
+										else if (g == 1)
+										{
+											b1 = (B[j][g][0] * B[j][0][1] - B[j][0][0] * B[j][g][1]) / (B[j][g][0] - B[j][0][0]);
+											k1 = (B[j][g][1] - B[j][0][1]) / (B[j][g][0] - B[j][0][0]);
+											b2 = (B[j][g][0] * B[j][2][1] - B[j][2][0] * B[j][g][1]) / (B[j][g][0] - B[j][2][0]);
+											k2 = (B[j][g][1] - B[j][2][1]) / (B[j][g][0] - B[j][2][0]);
+											b = (B[i][2][0] * B[i][0][1] - B[i][0][0] * B[i][2][1]) / (B[i][2][0] - B[i][0][0]);
+											k = (B[i][2][1] - B[i][0][1]) / (B[i][2][0] - B[i][0][0]);
+										}
+										else
+										{
+											b1 = (B[j][g][0] * B[j][1][1] - B[j][1][0] * B[j][g][1]) / (B[j][g][0] - B[j][1][0]);
+											k1 = (B[j][g][1] - B[j][1][1]) / (B[j][g][0] - B[j][1][0]);
+											b2 = (B[j][g][0] * B[j][0][1] - B[j][0][0] * B[j][g][1]) / (B[j][g][0] - B[j][0][0]);
+											k2 = (B[j][g][1] - B[j][0][1]) / (B[j][g][0] - B[j][0][0]);
+											b = (B[i][0][0] * B[i][1][1] - B[i][1][0] * B[i][0][1]) / (B[i][0][0] - B[i][1][0]);
+											k = (B[i][0][1] - B[i][1][1]) / (B[i][0][0] - B[i][1][0]);
+										}
+										x1 = (b - b1) / (k1 - k);
+										y1 = k * x1 + b;
+										x2 = (b - b2) / (k2 - k);
+										y2 = k * x2 + b;
+										S = 0.5 * fabs((x2 - x1) * (B[j][g][1] - y1) - (B[j][g][0] - x1) * (y2 - y1));
+										if (S == 6.75)
+										{
+											for (int ii = 0;ii < 3;ii++)
+											{
+												////cout << B[i][ii][0] << "_" << B[i][ii][1] << " ";
+											}
+											for (int ii = 0;ii < 3;ii++)
+											{
+												////cout << B[j][ii][0] << "_" << B[j][ii][1] << " ";
+											}
+											////cout << x1 << " " << y1 << " " << x2 << " " << y2 << " " << B[j][g][0] << " " << B[j][g][1] << " " << S << "\n";
+										}
+										//////cout << S<<"S";
+										if (S > Max && chikchirik == false)
+										{
+											//e = 0;
+											Max = S;
+											////cout << S;
+											w = 0;
+											ofstream f("ans.txt");
+											f << "Максимальная площадь пересечения треугольников = " << Max;
+											f << "\n" << "Треугольники с максимальной плащадью пересечения:" << "\n";
+											for (w;w < 2;w++)
+											{
+												////cout << "PROVERochka";
+												for (int ii = 0; ii < 3; ii++)
+												{
+													if (w == 0)
+													{
+														f << "(" << B[i][ii][0] << "; ";
+														f << B[i][ii][1] << ") ";
+													}
+													else
+													{
+														if (ii == 0)
+														{
+															f << "и ";
+														}
+														f  << "(" << B[j][ii][0] << "; ";
+														f << B[j][ii][1] << ") " ;
+													}
+												}
+												//e++;
+											}
+											f << "\n";
+										}
+										else if (S == Max && chikchirik == false)
+										{
+											ofstream f("ans.txt", ios::app);
+											int ww = w + 2;
+											for (w;w < ww;w++)
+											{
+												for (int ii = 0; ii < 3; ii++)
+												{
+													if (w == ww - 2)
+													{
+														f << "(" << B[i][ii][0] << "; ";
+														f << B[i][ii][1] << ") ";
+													}
+													else
+													{
+														if (ii == 0)
+														{
+															f << "и ";
+														}
+														f  << "(" << B[j][ii][0] << "; ";
+														f << B[j][ii][1] << ") ";
+													}
+												}
+												e++;
+											}
+											f << "\n";
+										}
+										f1 << " -Площадь пересечения равна " << S;
+										S = 0;
+									}
+								}
+							}
+							else
+							{
+								int r = 0;
+								for (int g = 0;g < 3;g++)
+								{
+									r += L[g];
+								}
+								if (r == 0)
+								{
+									f1 << " -Площадь пересечения равна " << 0;
+								}
+								else if (r > 1)
+								{
+									S = 0.5 * fabs((B[j][1][0] - B[j][0][0]) * (B[j][2][1] - B[j][0][1]) - (B[j][2][0] - B[j][0][0]) * (B[j][1][1] - B[j][0][1]));
+								}
+								else
+								{
+									//////cout << 2;
+									//f1 << "JUHJVYSQ";
+									float x1, x2, x3, x0, y1, y2, y3, y0, b1, b2, b, k1, k2, k;
+									for (int g = 0;g < 3;g++)
+									{
+										if (L[g] == 1)
+										{
+											for (int q = 0;q < 3;q++)
+											{
+												if (L2[q] == 1)
+												{
+													x1 = B[j][g][0];
+													y1 = B[j][g][1];
+													if (g == 0)
+													{
+														if (q == 0)
+														{
+															x2 = B[i][1][0];
+															y2 = B[i][1][1];
+															b1 = (B[i][2][0] * y2 - x2 * B[i][2][1]) / (B[i][2][0] - x2);
+															k1 = (B[i][2][1] - y2) / (B[i][2][0] - x2);
+															b2 = (B[j][2][0] * y1 - x1 * B[j][2][1]) / (B[j][2][0] - x1);
+															k2 = (B[j][2][1] - y1) / (B[j][2][0] - x1);
+														}
+														else
+														{
+															x2 = B[i][2][0];
+															y2 = B[i][2][1];
+															b1 = (B[i][1][0] * y2 - x2 * B[i][1][1]) / (B[i][1][0] - x2);
+															k1 = (B[i][1][1] - y2) / (B[i][1][0] - x2);
+															b2 = (B[j][1][0] * y1 - x1 * B[j][1][1]) / (B[j][1][0] - x1);
+															k2 = (B[j][1][1] - y1) / (B[j][1][0] - x1);
+														}
+													}
+													else if (g == 2)
+													{
+														if (q == 2)
+														{
+															x2 = B[i][0][0];
+															y2 = B[i][0][1];
+															b1 = (B[i][1][0] * y2 - x2 * B[i][1][1]) / (B[i][1][0] - x2);
+															k1 = (B[i][1][1] - y2) / (B[i][1][0] - x2);
+															b2 = (B[j][1][0] * y1 - x1 * B[j][1][1]) / (B[j][1][0] - x1);
+															k2 = (B[j][1][1] - y1) / (B[j][1][0] - x1);
+														}
+														else
+														{
+															x2 = B[i][1][0];
+															y2 = B[i][1][1];
+															b1 = (B[i][0][0] * y2 - x2 * B[i][0][1]) / (B[i][0][0] - x2);
+															k1 = (B[i][0][1] - y2) / (B[i][0][0] - x2);
+															b2 = (B[j][0][0] * y1 - x1 * B[j][0][1]) / (B[j][0][0] - x1);
+															k2 = (B[j][0][1] - y1) / (B[j][0][0] - x1);
+
+														}
+													}
+													else
+													{
+														if (q == 0)
+														{
+															x2 = B[i][q][0];
+															y2 = B[i][q][1];
+															b1 = (B[i][2][0] * y2 - x2 * B[i][2][1]) / (B[i][2][0] - x2);
+															k1 = (B[i][2][1] - y2) / (B[i][2][0] - x2);
+															b2 = (B[j][2][0] * y1 - x1 * B[j][2][1]) / (B[j][2][0] - x1);
+															k2 = (B[j][2][1] - y1) / (B[j][2][0] - x1);
+														}
+														else
+														{
+															chik = 777;
+															x2 = B[i][2][0];
+															y2 = B[i][2][1];
+															b1 = (B[i][0][0] * y2 - x2 * B[i][0][1]) / (B[i][0][0] - x2);
+															k1 = (B[i][0][1] - y2) / (B[i][0][0] - x2);
+															b2 = (B[j][0][0] * y1 - x1 * B[j][0][1]) / (B[j][0][0] - x1);
+															k2 = (B[j][0][1] - y1) / (B[j][0][0] - x1);
+														}
+													}
+													////cout << "\n";
+													x3 = (b2 - b1) / (k1 - k2);
+													y3 = k1 * x3 + b1;
+													S = 0.5 * fabs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1));
+													////cout << x1 << " " << y1 << " " << x2 << " " << y2 << " " << x3 << " " << y3 << " " << S << "\n";
+													//////cout << 228;
+													if (S > 0)
+													{
+														//////cout << 1;
+														//////cout << "PROVERochka" << S<<" "<<i;
+														if (S > Max && chikchirik == false)
+														{
+															//e = 0;
+															Max = S;
+															////cout << S;
+															//////cout << x1 << " " << y1 << " " << x2 << " " << y2 <<  " " << S << "\n";
+															w = 0;
+															ofstream f("ans.txt");
+															f << "Максимальная площадь пересечения треугольников = " << Max;
+															f << "\n" << "Треугольники с максимальной плащадью пересечения:" << "\n";
+															for (w;w < 2;w++)
+															{
+																//////cout << "PROVERochka";
+																for (int ii = 0; ii < 3; ii++)
+																{
+																	if (w == 0)
+																	{
+																		f << "(" << B[i][ii][0] << "; ";
+																		f << B[i][ii][1] << ") ";
+																	}
+																	else
+																	{
+																		if (ii == 0)
+																		{
+																			f << "и ";
+																		}
+																		f << "(" << B[j][ii][0] << "; ";
+																		f << B[j][ii][1] << ") ";
+																	}
+																}
+																//e++;
+															}
+															f << "\n";
+														}
+														else if (S == Max && chikchirik == false)
+														{
+															int ww = w + 2;
+															ofstream f("ans.txt", ios::app);
+															for (w;w < ww;w++)
+															{
+																for (int ii = 0; ii < 3; ii++)
+																{
+																	if (w == ww - 2)
+																	{
+																		f << "(" << B[i][ii][0] << "; ";
+																		f << B[i][ii][1] << ") ";
+																	}
+																	else
+																	{
+																		if (ii == 0)
+																		{
+																			f << "и ";
+																		}
+																		f << "(" << B[j][ii][0] << "; ";
+																		f << B[j][ii][1] << ") ";
+																	}
+																}
+																e++;
+															}
+															f << chik;
+															f << "\n";
+														}
+														f1 << c << " " << "- Площадь пересечения равна " << S;
+														S = 0;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (p == 2)
+						{
+							f1 << " -Стороны данных треугольников паралельны";
+							////cout << "yes";
+							for (int ii = 0;ii < 3;ii++)
+							{
+								////cout << B[i][ii][0] << "_" << B[i][ii][1] << " ";
+							}
+							for (int ii = 0;ii < 3;ii++)
+							{
+								////cout << B[j][ii][0] << "_" << B[j][ii][1] << " ";
+							}
+							////cout << "\n";
+							for (int g = 0;g < 6;g++)
+							{
+								for (int gg = 0;g < 2;g++)
+								{
+									Q1[g][gg] = -777;
+								}
+							}
+							int tmp=0;
+							for (int g = 0;g < 3;g++)
+							{
+								float x1, x2, x3, y1, y2, y3, x0, y0;
+								x1 = B[i][0][0];
+								x2 = B[i][1][0];
+								x3 = B[i][2][0];
+								y1 = B[i][0][1];
+								y2 = B[i][1][1];
+								y3 = B[i][2][1];
+								x0 = B[j][g][0];
+								y0 = B[j][g][1];
+								A = ((x1 - x0) * (y2 - y1) - (x2 - x1) * (y1 - y0));
+								bb = ((x2 - x0) * (y3 - y2) - (x3 - x2) * (y2 - y0));
+								cc = ((x3 - x0) * (y1 - y3) - (x1 - x3) * (y3 - y0));
+								if ((A > 0 && bb > 0 && cc > 0) || ((A < 0 && bb < 0 && cc < 0)))
+								{
+									Q1[tmp][0] = x0;
+									Q1[tmp][1] = y0;
+									tmp++;
+								}
+								else if (A == 0 || bb == 0 || cc == 0)
+								{
+									Q1[tmp][0] = x0;
+									Q1[tmp][1] = y0;
+									tmp++;
+								}
+							}
+							float x1, x2, x3, x21, x22, y1, y2, y3, y21, y22, b1, b2, k1, k2, x0, y0;
+							////cout << tmp <<"gbgf"<< "\n";
+							if (tmp==0)
+							{ 
+								for (int g = 0;g < 3;g++)
+								{
+									if (g == 2)
+									{
+										x1 = B[j][g][0];
+										y1 = B[j][g][1];
+										x2 = B[j][0][0];
+										y2 = B[j][0][1];
+									}
+									else
+									{
+										x1 = B[j][g][0];
+										y1 = B[j][g][1];
+										x2 = B[j][g + 1][0];
+										y2 = B[j][g + 1][1];
+									}
+									if (g == 2)
+									{
+										for (int gg = 2;gg >=0;gg--)
+										{
+											if (gg == 2)
+											{
+												x21 = B[i][gg][0];
+												y21 = B[i][gg][1];
+												x22 = B[i][0][0];
+												y22 = B[i][0][1];
+											}
+											else
+											{
+												x21 = B[i][gg][0];
+												y21 = B[i][gg][1];
+												x22 = B[i][gg + 1][0];
+												y22 = B[i][gg + 1][1];
+											}
+											if (x22 - x21 != 0)
+											{
+												b1 = (x22 * y21 - x21 * y22) / (x22 - x21);
+												k1 = (y22 - y21) / (x22 - x21);
+											}
+											else
+											{
+												b1 = 0;
+												k1 = x21;
+											}
+											if (x2 - x1 != 0)
+											{
+												b2 = (x2 * y1 - x1 * y2) / (x2 - x1);
+												k2 = (y2 - y1) / (x2 - x1);
+											}
+											else
+											{
+												b2 = 0;
+												k2 = x1;
+											}
+											if (b1 == 0)
+											{
+												x3 = k1;
+												y3 = k2 * x3 + b2;
+											}
+											else if (b2 == 0)
+											{
+												x3 = k2;
+												y3 = k1 * x3 + b1;
+											}
+											else
+											{
+												x3 = (b2 - b1) / (k1 - k2);
+												y3 = k1 * x3 + b1;
+											}
+											////cout <<x1<<"_"<<y1<<" "<<x2 << "_" << y2 << x21 << "_" << y21 << " " << x22 << "_" << y22 << x3 << y3 << "x3y3" << "\n";
+											if (((x1 <= x3 && x3 <= x2) || (x2 <= x3 && x3 <= x1)) && ((x21 <= x3 && x3 <= x22) || (x22 <= x3 && x3 <= x21)) && ((y1 <= y3 && y3 <= y2) || (y2 <= y3 && y3 <= y1)) && ((y21 <= y3 && y3 <= y22) || (y22 <= y3 && y3 <= y21)))
+											{
+												tmp++;
+												////cout << x1 << "_" << y1 << "&" << x2 << "_" << y2 << " " << x21 << "_" << y21 << "&" << x22 << "_" << y22 << "\n";
+												////cout << tmp << " tmp" << " " << x3 << " " << y3 << "\n";
+												Q1[tmp - 1][0] = x3;
+												Q1[tmp - 1][1] = y3;
+											}
+										}
+									}
+									else
+									{
+										for (int gg = 0;gg < 3;gg++)
+										{
+											if (gg == 2)
+											{
+												x21 = B[i][gg][0];
+												y21 = B[i][gg][1];
+												x22 = B[i][0][0];
+												y22 = B[i][0][1];
+											}
+											else
+											{
+												x21 = B[i][gg][0];
+												y21 = B[i][gg][1];
+												x22 = B[i][gg + 1][0];
+												y22 = B[i][gg + 1][1];
+											}
+											if (x22 - x21 != 0)
+											{
+												b1 = (x22 * y21 - x21 * y22) / (x22 - x21);
+												k1 = (y22 - y21) / (x22 - x21);
+											}
+											else
+											{
+												b1 = 0;
+												k1 = x21;
+											}
+											if (x2 - x1 != 0)
+											{
+												b2 = (x2 * y1 - x1 * y2) / (x2 - x1);
+												k2 = (y2 - y1) / (x2 - x1);
+											}
+											else
+											{
+												b2 = 0;
+												k2 = x1;
+											}
+											if (b1 == 0)
+											{
+												x3 = k1;
+												y3 = k2 * x3 + b2;
+											}
+											else if (b2 == 0)
+											{
+												x3 = k2;
+												y3 = k1 * x3 + b1;
+											}
+											else
+											{
+												x3 = (b2 - b1) / (k1 - k2);
+												y3 = k1 * x3 + b1;
+											}
+											if (((x1 <= x3 && x3 <= x2) || (x2 <= x3 && x3 <= x1)) && ((x21 <= x3 && x3 <= x22) || (x22 <= x3 && x3 <= x21)) && ((y1 <= y3 && y3 <= y2) || (y2 <= y3 && y3 <= y1)) && ((y21 <= y3 && y3 <= y22) || (y22 <= y3 && y3 <= y21)) && (proverka3(Q1, tmp, x3, y3) == true))
+											{
+												//cout << x1 << "_" << y1 << " " << x2 << "_" << y2 << x21 << "_" << y21 << " " << x22 << "_" << y22 << x3 << y3 << "x3y3" << "\n";
+												tmp++;
+												////cout << x1 << "_" << y1 << "&" << x2 << "_" << y2 << " " << x21 << "_" << y21 << "&" << x22 << "_" << y22 << "\n";
+												////cout << tmp << " tmp" << " " << x3 << " " << y3 << "\n";
+												Q1[tmp - 1][0] = x3;
+												Q1[tmp - 1][1] = y3;
+											}
+										}
+									}
+								}
+								////cout << tmp << " tmp" << "\n";
+								if (tmp == 0)
+								{
+									f1 << " -Площадь пересечения равна " << 0;
+								}
+								else
+								{
+									//cout <<"\n"<< tmp << "\n";
+									S = 0;
+									float x, y;
+									float a, b;
+									a = Q1[2][0];
+									b = Q1[2][1];
+									Q1[2][0] = Q1[4][0];
+									Q1[2][1] = Q1[4][1];
+									Q1[4][0] = a;
+									Q1[4][1] = b;
+									a = Q1[3][0];
+									b = Q1[3][1];
+									Q1[3][0] = Q1[5][0];
+									Q1[3][1] = Q1[5][1];
+									Q1[5][0] = a;
+									Q1[5][1] = b;
+									a = Q1[4][0];
+									b = Q1[4][1];
+									Q1[4][0] = Q1[5][0];
+									Q1[4][1] = Q1[5][1];
+									Q1[5][0] = a;
+									Q1[5][1] = b;
+									for (int g = 0;g < tmp;g++)
+									{
+										cout << Q1[g][0] << "_" << Q1[g][1] << "\n";
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											y = Q1[0][1];
+										}
+										else
+										{
+											y = Q1[g + 1][1];
+										}
+										x = Q1[g][0];
+										////cout << x << " " << y;
+										////cout << (x * y) << "\n";
+										S += (x * y);
+									}
+									////cout << S;
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											x = Q1[0][0];
+										}
+										else
+										{
+											x = Q1[g + 1][0];
+										}
+										y = Q1[g][1];
+										////cout << (x * y) << "\n";
+										S -= (x * y);
+									}
+									////cout << S;
+									S = 0.5 * fabs(S);
+									//cout << S;
+								}
+							}
+							else if (tmp == 1 || tmp==2)
+							{
+								for (int g = 0;g < 3;g++)
+								{
+									if (g == 2)
+									{
+										x1 = B[j][g][0];
+										y1 = B[j][g][1];
+										x2 = B[j][0][0];
+										y2 = B[j][0][1];
+									}
+									else
+									{
+										x1 = B[j][g][0];
+										y1 = B[j][g][1];
+										x2 = B[j][g+1][0];
+										y2 = B[j][g+1][1];
+									}
+									for (int gg = 0;gg < 3;gg++)
+									{
+										if (gg == 2)
+										{
+											x21 = B[i][gg][0];
+											y21 = B[i][gg][1];
+											x22 = B[i][0][0];
+											y22 = B[i][0][1];
+										}
+										else
+										{
+											x21 = B[i][gg][0];
+											y21 = B[i][gg][1];
+											x22 = B[i][gg + 1][0];
+											y22 = B[i][gg + 1][1];
+										}
+										b1 = (x22 * y21 - x21 * y22) / (x22 - x21);
+										k1 = (y22 - y21) / (x22 - x21);
+										b2 = (x2 * y1 - x1 * y2) / (x2 - x1);
+										k2 = (y2 - y1) / (x2 - x1);
+										x3 = (b2 - b1) / (k1 - k2);
+										y3 = k1 * x3 + b1;
+										if (((x1 <= x3 && x3 <= x2) || (x2 <= x3 && x3 <= x1)) && ((y1 <= y3 && y3 <= y2) || (y2 <= y3 && y3 <= y1)) && ((x21 <= x3 && x3 <= x22) || (x22 <= x3 && x3 <= x21)) && ((y21 <= y3 && y3 <= y22) || (y22 <= y3 && y3 <= y21)) && (proverka3(Q1, tmp, x3, y3) == true))
+										{
+											tmp++;
+											Q1[tmp - 1][0] = x3;
+											Q1[tmp - 1][1] = y3;
+										////cout << "tmp" << tmp <<x3<<" "<<y3<<"\n";
+										}
+									}
+								}
+								if (tmp == 2 || tmp == 1)
+								{
+									S = 0;
+								}
+								else if (tmp == 5 || tmp==6)
+								{
+									float a, b;
+									a = Q1[0][0];
+									b = Q1[0][1];
+									Q1[0][0] = Q1[4][0];
+									Q1[0][1] = Q1[4][1];
+									Q1[4][0] = a;
+									Q1[4][1] = b;
+									for (int g = 0;g < tmp;g++)
+									{
+										////cout << Q1[g][0] << " " << Q1[g][1] << "\n";
+									}
+									S = 0;
+									float x, y;
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											y = Q1[0][1];
+										}
+										else
+										{
+											y = Q1[g+1][1];
+										}
+										x = Q1[g][0];
+										S += (x * y);
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											x = Q1[0][0];
+										}
+										else
+										{
+											x = Q1[g + 1][0];
+										}
+										y = Q1[g][1];
+										S -= (x * y);
+									}
+									S = 0.5 * fabs(S);
+								}
+								else if (tmp == 4)
+								{
+									for (int g = 0;g < 3;g++)
+									{
+										x1 = B[j][0][0];
+										x2 = B[j][1][0];
+										x3 = B[j][2][0];
+										y1 = B[j][0][1];
+										y2 = B[j][1][1];
+										y3 = B[j][2][1];
+										x0 = B[i][g][0];
+										y0 = B[i][g][1];
+										A = ((x1 - x0) * (y2 - y1) - (x2 - x1) * (y1 - y0));
+										bb = ((x2 - x0) * (y3 - y2) - (x3 - x2) * (y2 - y0));
+										cc = ((x3 - x0) * (y1 - y3) - (x1 - x3) * (y3 - y0));
+										if ((A > 0 && bb > 0 && cc > 0) || ((A < 0 && bb < 0 && cc < 0)) && (proverka3(Q1, tmp, x0, y0) == true))
+										{
+											Q1[tmp][0] = x0;
+											Q1[tmp][1] = y0;
+											tmp++;
+											break;
+										}
+										else if ((A == 0 || bb == 0 || cc == 0) && (proverka3(Q1, tmp, x0, y0) == true))
+										{
+											Q1[tmp][0] = x0;
+											Q1[tmp][1] = y0;
+											tmp++;
+											break;
+										}
+									}
+									S = 0;
+									float x, y;
+									for (int g = 0;g < tmp;g++)
+									{
+										////cout << Q1[g][0] << " " << Q1[g][1] << "\n";
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											y = Q1[0][1];
+										}
+										else
+										{
+											y = Q1[g + 1][1];
+										}
+										x = Q1[g][0];
+										S += (x * y);
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											x = Q1[0][0];
+										}
+										else
+										{
+											x = Q1[g + 1][0];
+										}
+										y = Q1[g][1];
+										S -= (x * y);
+									}
+									S = 0.5 * fabs(S);
+								}
+								else if (tmp == 3)
+								{
+									for (int g = 0;g < 3;g++)
+									{
+										x1 = B[j][0][0];
+										x2 = B[j][1][0];
+										x3 = B[j][2][0];
+										y1 = B[j][0][1];
+										y2 = B[j][1][1];
+										y3 = B[j][2][1];
+										x0 = B[i][g][0];
+										y0 = B[i][g][1];
+										A = ((x1 - x0) * (y2 - y1) - (x2 - x1) * (y1 - y0));
+										bb = ((x2 - x0) * (y3 - y2) - (x3 - x2) * (y2 - y0));
+										cc = ((x3 - x0) * (y1 - y3) - (x1 - x3) * (y3 - y0));
+										if ((A > 0 && bb > 0 && cc > 0) || ((A < 0 && bb < 0 && cc < 0)) && (proverka3(Q1, tmp, x0, y0) == true))
+										{
+											Q1[tmp][0] = x0;
+											Q1[tmp][1] = y0;
+											tmp++;
+											break;
+										}
+										else if ((A == 0 || bb == 0 || cc == 0) && (proverka3(Q1, tmp, x0, y0) == true))
+										{
+											Q1[tmp][0] = x0;
+											Q1[tmp][1] = y0;
+											tmp++;
+											break;
+										}
+									}
+									float a, b;
+									a = Q1[2][0];
+									b = Q1[2][1];
+									Q1[2][0] = Q1[3][0];
+									Q1[2][1] = Q1[3][1];
+									Q1[3][0] = a;
+									Q1[3][1] = b;
+									S = 0;
+									float x, y;
+									for (int g = 0;g < tmp;g++)
+									{
+										////cout << Q1[g][0] << " " << Q1[g][1] << "\n";
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											y = Q1[0][1];
+										}
+										else
+										{
+											y = Q1[g + 1][1];
+										}
+										x = Q1[g][0];
+										S += (x * y);
+									}
+									for (int g = 0;g < tmp;g++)
+									{
+										if (g == tmp-1)
+										{
+											x = Q1[0][0];
+										}
+										else
+										{
+											x = Q1[g + 1][0];
+										}
+										y = Q1[g][1];
+										S -= (x * y);
+									}
+									S = 0.5 * fabs(S);
+								}
+							}
+						
+						}
+						if (S > Max && chikchirik == false)
+						{
+							//e = 0;
+							Max = S;
+							//////cout << x1 << " " << y1 << " " << x2 << " " << y2 <<  " " << S << "\n";
+							w = 0;
+							ofstream f("ans.txt");
+							f << "     Максимальная площадь пересечения треугольников = " << Max;
+							f << "\n" << "Треугольники с максимальной плащадью пересечения:" << "\n";
+							for (w;w < 2;w++)
+							{
+								//////cout << "PROVERochka";
+								for (int ii = 0; ii < 3; ii++)
+								{
+									if (w == 0)
+									{
+										f << "(" << B[i][ii][0] << "; ";
+										f << B[i][ii][1] << ") ";
+									}
+									else
+									{
+										if (ii == 0)
+										{
+											f << "и ";
+										}
+										f << "(" << B[j][ii][0] << "; ";
+										f << B[j][ii][1] << ") ";
+									}
+								}
+							}
+							f << "\n";
+						}
+						else if (S == Max && chikchirik == false)
+						{
+							int ww = w + 2;
+							ofstream f("ans.txt", ios::app);
+							for (w;w < ww;w++)
+							{
+								for (int ii = 0; ii < 3; ii++)
+								{
+									if (w == ww - 2)
+									{
+										f << "(" << B[i][ii][0] << "; ";
+										f << B[i][ii][1] << ") ";
+									}
+									else
+									{
+										if (ii == 0)
+										{
+											f << "и ";
+										}
+										f << "(" << B[j][ii][0] << "; ";
+										f << B[j][ii][1] << ") ";
+									}
+								}
+								e++;
+							}
+							f << chik;
+							f << "\n";
+						}
+						if (chikchirik == false && S!=0)
+						{
+							f1 << " " << "- Площадь пересечения равна " << S;
+							S = 0;
+						}
+					}
+				}
+			}
+		}
+		f1 << Max<<" -Максимальная площадь пересечения.";
+		delete[]B;
+	}
+	void main()
+	{
+		ofstream f("ans.txt");
+		f << "   ";
+		int c = 0;
+		int N;
+		float** A;
+		float*** B;
+		float*** C;
+		N = size();
+		A = arr(&N);
+		B = vozmojnietreyg(A, N,&c);
+		delete[]A;
+		treyg(B, &c);
+		Tsort(B, &c);
+		maxploshad(B, &c);
+		cout << "Ответ в файле ans.txt";
+	}
